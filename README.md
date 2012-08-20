@@ -1,4 +1,4 @@
-# Nginx configuration for running Drupal
+## Nginx configuration for running Drupal
 
 ## Introduction
 
@@ -9,7 +9,7 @@
    Nginx doesn't use a module like Apache does for PHP support. The
    Apache module approach simplifies a lot of things because what you
    have in reality is nothing less than a PHP engine running on top of
-   the HTTP server. 
+   the HTTP server.
 
    Instead nginx uses [FastCGI](http://en.wikipedia.org/wiki/FastCGI)
    to proxy all requests for PHP processing to a php fastcgi daemon that
@@ -24,8 +24,8 @@
    [yhager's](github.com/yhager/nginx_drupal) configuration, tempered
    by [omega8cc](http://github.com/omega8cc/nginx-for-drupal) and
    [Brian Mercer](http://test.brianmercer.com/content/nginx-configuration-drupal)
-   (dead link) configurations. 
-   
+   (dead link) configurations.
+
    I've since then changed it substantially. Tried to remove as best
    as I can the traces of bad habits promoted by Apache's
    configuration logic. Namely the use of a `.htaccess` and what it
@@ -35,18 +35,18 @@
    [nginx Wiki](http://wiki.nginx.org).
 
 ## Layout
-   
+
    The configuration comes in **two** flavors:
-   
+
    1. Drupal 6.
 
    2. Drupal 7.
-    
+
 Furthermore there are **two** options for each configuration:
-      
+
    1. A **non drush aware** option that uses `wget/curl` to run cron
       and updating the site using `update.php`, i.e., via a web
-      interface. 
+      interface.
 
    2. A **drush aware flavor** that runs cron and updates the site
       using [drush](http://drupal.org/project/drush).
@@ -100,27 +100,27 @@ version.
 
 ## Configuration Selection Algorithm
 
- 1. I'm **not** using [Boost](http://drupal.org/project/boost):   
-   
+ 1. I'm **not** using [Boost](http://drupal.org/project/boost):
+
   * On **drupal 7** use the `drupal.conf` config in your vhost
     (`server` block): `include sites-availables/drupal.conf;`.
-    
+
   * On **drupal 7** having to serve URIs that need to be **escaped**,
     e.g., that have `+` and/or `?` then use the `drupal_escaped.conf`
-    config in your vhost (`server` block): 
+    config in your vhost (`server` block):
     `include sites-available/drupal_escaped.conf`.
-       
+
   * On **drupal 6** use the `drupal6.conf` config in your vhost
     (`server` block): `include sites-availables/drupal6.conf;`.
-    
+
   * On **drupal 6** if having to serve URIs that need to be
     **escaped**, e.g., that have `+` and/or `?` then use the
     `drupal6_escaped.conf` config in your vhost (`server` block):
     `include sites-available/drupal6_escaped.conf`.
-    
+
  2. I'm using [Boost](http://drupal.org/project/boost) for caching
       on my drupal site.
-      
+
   * On **drupal 7** use the `drupal_boost.conf` config in your vhost
     (`server` block): `include sites-available/drupal_boost.conf;`.
 
@@ -131,22 +131,22 @@ version.
 
   * On **drupal 6** use the `drupal_boost6.conf` config in your vhost
     (`server` block): `include sites-available/drupal_boost6.conf;`.
-   
+
   * On **drupal 6** if having to serve URIs that need to be
     **escaped**, e.g., that have `+` and/or `?` then use the
     `drupal_boost6_escaped.conf` config in your vhost (`server`
     block): `include sites-available/drupal_boost6_escaped.conf`.
-   
+
  3. I'm **not using drush** for updating and running
     cron. Additionally you should also include the
     `drupal_cron_update.conf` config in your vhost (`server` block):
     `include sites-available/drupal_cron_update.conf;`
-      
+
  4. I'm using **drupal 8**. Just use the drupal 7 configuration. The
     only thing that changes so far is the location of `install.php`.
-    
+
     It's `/core/install.php` instead of `install.php`.
-    
+
 ## Boost and Drupal 6
 
 The standard Drupal 6 core sets cookies also for anonymous
@@ -186,11 +186,11 @@ There are two ways to deal with that:
     at `/admin/settings/globalredirect` and presents a status line on
     the status page at `/admin/reports/status`. This module fixes the
     issues for you.
-    
+
  2. Take care of the **deslash** setting yourself by disabling it at
     `/admin/settings/globalredirect`. Note that this is enabled by
-    **default**. 
-    
+    **default**.
+
 This is strictly a **drupal 6** issue.
 
 ## General Features
@@ -223,7 +223,7 @@ This is strictly a **drupal 6** issue.
       rewrites that need to use URI components.1
 
    10. IPv6 and IPv4 support.
-   
+
    11. Support for **private file** serving in drupal.
 
    12. Support for
@@ -237,30 +237,30 @@ This is strictly a **drupal 6** issue.
        that I make available here on github that launches the PHP
        FastCGI daemon and spawns new instances as required. This is
        not needed if you're using php-fpm.
-  
+
    14. End of the [expensive 404s](http://drupal.org/node/76824
        "Expensive 404s issue") that Drupal usually handles when
        using Apache with the default `.htaccess`.
-  
+
    15. Possibility of using **Apache** as a backend for dealing with
        PHP. Meaning using Nginx as
        [reverse proxy](http://wiki.nginx.org/HttpProxyModule "Nginx
        Proxy Module").
-       
+
    16. [Advanced Help](http://drupal.org/project/advanced_help)
        support.
-       
+
    17. [Advanced Aggregation](http://drupal.org/project/advagg)
        support.
-       
+
    18. [Microcaching](http://fennb.com/microcaching-speed-your-app-up-250x-with-no-n)
        support for both **anonymous** and **authenticated** users.
-       
+
    19. Support for escaped URIs, i.e., URIs that require percent
        encoding.
-       
-   20. Support for drupal 8.     
-           
+
+   20. Support for drupal 8.
+
 ## Secure HTTP aka SSL/TLS support
 
    1. By default and since version
@@ -271,29 +271,29 @@ This is strictly a **drupal 6** issue.
       supported. They can be enabled explicitly but due to their
       **insecure** nature they're discouraged. The same goes for
       SSLv2.
-      
+
    2. SSL/TLS shared cache for SSL session resume support of 10
       MB. SSL session timeout is set to 10 minutes.
-      
+
    3. Note that for session resumption to work the setting of the SSL
       socket as default, at least, is required. Meaning a listen
       directive like this:
-      
+
       `listen [::]:443 ssl default_server;`
-      
+
       This is so because session resumption takes place before any TLS
       extension is enabled, namely
       [Server Name Indication](http://en.wikipedia.org/wiki/Server_Name_Indication
       "SNI"). The ClientHello message requests a session ID from a
       given IP address (server). Therefore the default server setting
       is **required**.
-       
+
       Another option, the one I've chosen here, is to move the
       `ssl_session_cache` directive to the `http` context setting. Of
       course the downside of this approach is that the
       `ssl_session_cache` settings are the same for **all** configured
       virtual hosts.
-      
+
 ## Security Features
 
    1. No direct access to PHP scripts. All PHP scripts, including
@@ -314,12 +314,12 @@ This is strictly a **drupal 6** issue.
       need either the
       [thttpd-util](http://packages.debian.org/search?keywords=thttpd-util)
       or [apache2-utils](http://packages.debian.org/search?suite%3Dall&section%3Dall&arch%3Dany&searchon%3Dnames&keywords%3Dapache2-utils)
-   package installed. 
-   
+   package installed.
+
       With `thttpd-util` create your password file by issuing:
-   
+
          thtpasswd -c .htpasswd-users <user> <password>
-   
+
       With `apache2-utils` create your password file by issuing:
 
          htpasswd -d -b -c .htpasswd-users <user> <password>
@@ -355,9 +355,9 @@ This is strictly a **drupal 6** issue.
    5. Protection of the upload directory. You can try to bypass the
       UNIX `file` utility or the PHP `Fileinfo` extension and upload a
       fake jpeg:
-   
+
           echo -e "\xff\xd8\xff\xe0\n<?php echo 'hello'; ?>" > test.jpg
-      
+
       If you run `php test.jpg` you get 'hello'. The fact is that
       **all files** with php extension are either matched by a
       particular location, as is the case for `xmlrpc.php`,
@@ -365,12 +365,12 @@ This is strictly a **drupal 6** issue.
       the configuration:
 
           location ~* ^.+\.php$ {
-            return 404; 
+            return 404;
           }
 
       Returning a 404 (Not Found) for every PHP file not matched by
       all the previous locations.
-      
+
       Note that `index.php` is accessed only **indirectly**, meaning
       it always from within the Nginx config. You cannot access it
       directly from outside.
@@ -381,17 +381,17 @@ This is strictly a **drupal 6** issue.
       only over HTTPS. Requires a modern browser to be of use, i.e.,
       **Chrome/Chromium**, **Firefox 4** or **Firefox with
       NoScript**.
-      
+
    7. DoS prevention with a _low_ number of connections by client
       allowed: **32**. This number can be adjusted as you see fit.
-   
+
    8. The Drupal specific headers like `X-Drupal-Cache` provided by
       [pressflow](https://github.com/pressflow/6) or the `X-Generator`
-      header that Drupal 7 sets are both **hidden**. 
+      header that Drupal 7 sets are both **hidden**.
 
    9. Limitation of allowed HTTP methods. Out of the box only `GET`,
       `HEAD` and `POST`are allowed.
-      
+
 ## Private file handling
 
    This config assumes that **private** files are stored under a directory
@@ -404,11 +404,11 @@ This is strictly a **drupal 6** issue.
 
    Example: Calling the top level private files directory `protected`
    instead of `private`.
-       
+
        location ^~ /sites/default/files/protected {
          internal;
        }
-  
+
    Now any attempt to access the files under this directory directly
    will return a 404.
 
@@ -419,12 +419,12 @@ This is strictly a **drupal 6** issue.
    the web server user. While that might be a simple alternative in
    the sense that doesn't require to tweak the web server
    configuration, I think it to be less advisable, in the sense that
-   now there's **another** directory that is writable by the server. 
-   
+   now there's **another** directory that is writable by the server.
+
    I prefer to use a directory under `files`, which is the only one
    that is writable by the web server, and use the above location
    (`protected` or `private`) to block access by the client to it.
-   
+
    Also bear in mind that the above configuration stanza is for a
    drupal 7 or a drupal 6 site not relying on
    [purl](http://drupal.org/project/purl). For sites that use it,
@@ -433,13 +433,13 @@ This is strictly a **drupal 6** issue.
    [OpenAtrium](http://openatrium.com) or
    [ManagingNews](http://managingnews.com) require a **regex** based
    location, i.e.:
-   
+
        location ~* /sites/default/files/protected {
          internal;
        }
-   
+
    in order to work properly.
-   
+
 ## Fast Private File Transfer
 
    Nginx implements
@@ -447,10 +447,10 @@ This is strictly a **drupal 6** issue.
    "Lighty's life blog post on X-Sendfile") using the header:
    [X-Accel-Redirect](http://wiki.nginx.org/XSendfile "Nginx
    implementation of X-Sendfile").
-   
+
    This allows **fast** private file transfers. I've developed a
    module tailored for Nginx:
-   [nginx\_accel\_redirect](http://drupal.org/project/nginx_accel_redirect "Module for Drupal providing fast private file transfer"). 
+   [nginx\_accel\_redirect](http://drupal.org/project/nginx_accel_redirect "Module for Drupal providing fast private file transfer").
 
 ## Connections per client and DoS Mitigation
 
@@ -462,8 +462,8 @@ This is strictly a **drupal 6** issue.
    or extensive
    [domain sharding](http://www.stevesouders.com/blog/2009/05/12/sharding-dominant-domains/)
    and the number of allowed connections by client can be greater than
-   32, specially when using Nginx as a reverse proxy. 
-   
+   32, specially when using Nginx as a reverse proxy.
+
    It may happen that 32 is not enough and you start getting a lot of
    `503 Service Unavailable` status codes as a reply from the
    server. In that case tweak the value of `limit_conn` until you have
@@ -476,11 +476,11 @@ This is strictly a **drupal 6** issue.
    those cases providing protection against
    [hotlinking](https://simple.wikipedia.org/wiki/Hot-linking) is a
    must.
-   
+
    To make use of that uncomment the proper line on the `/imagecache/`
    location that includes the
    `sites-available/hotlinking_protection.conf` file.
-   
+
    The protection is based on the
    [Nginx referer module](http://nginx.org/en/docs/http/ngx_http_referer_module.html). You
    must specify the hosts that are allowed to access the images. The
@@ -491,11 +491,11 @@ This is strictly a **drupal 6** issue.
    For a standard drupal install there's no need for any method
    besides `GET`, `HEAD` and `POST`. The allowed methods are
    enumerated in the file `map_block_http_methods.conf`.
-   
+
    If your site uses/provide web services then you must add the
    methods you need to the list. For example if you want to allow
    `PUT` then do:
-   
+
        map $request_method $not_allowed_method {
            default 1;
            GET 0;
@@ -518,14 +518,14 @@ This is strictly a **drupal 6** issue.
    [`server_name`](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_name)
    directive with **all** the sites that your Drupal installation
    serves.
-   
+
    For example your Drupal installation serves the sites
    `foo.example.com`, `bar.example.net` and
    `baz.foo.example.org`. Then you need to configure your vhost like
    this:
-   
+
        server_name foo.example.com bar.example.net baz.foo.example.org;
-       
+
    Note that Nginx allows for the server name to be either a regex or
    a wildcard expression. See
    [this](http://nginx.org/en/docs/http/server_names.html) to delve
@@ -559,7 +559,7 @@ This is strictly a **drupal 6** issue.
 
    The `/` location is a **_fallback_** location, meaning that after
    trying all other, more specific locations, Nginx, will return here.
-   
+
    Since there's a `try_files $uri` directive within `@cache`, if using
    [Boost](http://drupal.org/project/boost), or `@drupal`, or
    `index.php?q=$uri&$args` otherwise, as fallback it will return a
@@ -567,10 +567,10 @@ This is strictly a **drupal 6** issue.
    the root. That is for a request URI of `/`. It will work however
    with `/index.html`, since that's the argument of the `try_files`
    directive.
-   
+
    There's several possible ways to fix that. Be with nested locations
    inside `location /` or with an aditional `try_files $uri/index.html`.
-   
+
    The one I opted for is instead making use of the
    [`error_page`](http://wiki.nginx.org/HttpCoreModule#error_page)
    directive. There's an exact location `/` that issues a
@@ -588,7 +588,7 @@ This is strictly a **drupal 6** issue.
 
  Example if we're trying to serve `foobar.html` in a certain location
  if `gzip_static` is set to `on`, then Nginx will make a `stat()` call
- to try to serve `foobar.html.gz` first. 
+ to try to serve `foobar.html.gz` first.
 
  Exceptions to that rule are rare in the drupal world. The most common
  occasion to found such a practice is when using Boost. Since there's
@@ -596,19 +596,19 @@ This is strictly a **drupal 6** issue.
  cache.
 
  By default on the Boost cache locations we have:
- 
+
      gzip_static on;
 
  If you have **other** locations, besides the Boost cache, that
  have gzipped files to be served you have to set:
- 
+
      gzip_static on;
- 
+
  Note that in order to use `gzip_static` the
  [`ngx_http_gzip_static_module`](http://nginx.org/en/docs/http/ngx_http_gzip_static_module.html)
  must be **enabled**. Check your nginx with `nginx -V` to see if the
  module is enabled.
- 
+
 ## Microcaching
 
 ### Introduction
@@ -634,46 +634,46 @@ This is strictly a **drupal 6** issue.
   This configuration supports both **anonymous** and **authenticated**
   users caching. You should enable **one and only one**. The
   authenticated user cache **also** supports anonymous users.
-  
+
   By default on both drupal 6 and drupal 7 the **anonymous** user
   microcache is enabled. If you want to use the **authenticated** user
   microcache instead comment out the line:
-  
+
   1. `include sites-available/microcache_fcgi.conf` if using the FCGI
      microcache (when proxying to FCGI).
-     
+
   2. `include sites-available/microcache_proxy.conf` if using the
      proxy cache (proxying to Apache or other PHP handler).
- 
+
   and uncomment:
-  
+
   1. `include sites-available/microcache_fcgi_auth.conf` if using the FCGI
      microcache (when proxying to FCGI).
-     
+
   2. `include sites-available/microcache_proxy_auth.conf` if using the
      proxy cache (proxying to Apache or other PHP handler).
- 
+
   You're set to go.
-  
+
 ### Boost and authenticated user microcaching
 
  When using [Boost](http://drupal.org/project/boost) **you can use** the
  authenticated user microcache. It will give you an additional layer
  of caching.
- 
+
  This is enabled by default. Comment out the `include
  sites-available/microcache_fcgi_auth.conf` or `include
  sites-available/microcache_proxy_auth.conf` line if you don't want to
  use microcaching at all with Boost.
- 
+
 ### Microcaching for authenticated users under the hood
 
  The way microcaching for authentitcated is implemented uses a
  `$cache_uid` variable that is set on
  [`map_cache.conf`](https://github.com/perusio/drupal-with-nginx/blob/master/map_cache.conf#L21).
- 
+
  + anonymous users get a `$cache_uid` value of `nil`.
- 
+
  + authenticated users get a `$cache_uid` value that is the **session
    id**. Note that the named capture that grabs the session ID assumes
    that you're using the **default** setting in terms of what drupal
@@ -687,12 +687,12 @@ This is strictly a **drupal 6** issue.
 ### Useful scripts for working with Nginx cache
 
  Here's two useful scripts for working with the Nginx cache:
- 
+
  1. [nginx cache inspector](https://github.com/perusio/nginx-cache-inspector)
     allows you to inspect the cache files.
-    
+
  2. [nginx cache purge](https://github.com/perusio/nginx-cache-purge)
-    allows you to purge and item or set of items from the Nginx cache.   
+    allows you to purge and item or set of items from the Nginx cache.
 
 ## IPv6 and IPv4
 
@@ -709,21 +709,21 @@ replace** the indicated address by **your** address.
 ## Installation
 
  1. Move the old `/etc/nginx` directory to `/etc/nginx.old`.
-   
+
  2. Clone the git repository from github:
-   
+
         git clone https://github.com/perusio/drupal-with-nginx.git
-   
+
  3. Edit the `sites-available/example.com.conf` configuration file to
     suit your requirements. Namely replacing example.com with **your**
     domain.
-   
+
  4. Setup the PHP handling method. It can be:
-   
+
   + Upstream HTTP server like Apache with mod_php. To use this method
     comment out the `include upstream_phpcgi.conf;` line in
     `nginx.conf` and uncomment the lines:
-        
+
          include reverse_proxy.conf;
          include upstream_phpapache.conf;
 
@@ -737,62 +737,62 @@ replace** the indicated address by **your** address.
     config layout you're using. Uncomment out all the `proxy_pass`
     directives. They have a comment around them, stating these
     instructions.
-      
+
   + FastCGI process using php-cgi. In this case an
       [init script](https://github.com/perusio/php-fastcgi-debian-script
       "Init script for php-cgi") is required. This is how the server
       is configured out of the box. It uses UNIX sockets. You can use
       TCP sockets if you prefer.
-      
+
   + [PHP FPM](http://www.php-fpm.org "PHP FPM"), this requires you to
     configure your fpm setup, in Debian/Ubuntu this is done in the
     `/etc/php5/fpm` directory.
-       
+
     Look [here](https://github.com/perusio/php-fpm-example-config) for
     an **example configuration** of `php-fpm`.
-      
+
     Check that the socket is properly created and is listening. This
     can be done with `netstat`, like this for UNIX sockets:
-      
+
           netstat --unix -l
-         
-    And like this for TCP sockets:   
-         
+
+    And like this for TCP sockets:
+
           netstat -t -l
-   
+
     It should display the PHP CGI socket.
-   
+
     Note that the default socket type is UNIX and the config assumes
     it to be listening on `unix:/tmp/php-cgi/php-cgi.socket`, if using
     the `php-cgi`, or in `unix:/var/run/php-fpm.sock` using `php-fpm`
     and that you should **change** to reflect your setup by editing
     `upstream_phpcgi.conf`.
-   
+
  5. Create the `/etc/nginx/sites-enabled` directory and enable the
-    virtual host using one of the methods described below. 
-      
+    virtual host using one of the methods described below.
+
     Note that if you're using the
     [nginx_ensite](http://github.com/perusio/nginx_ensite) script
     described below it **creates** the `/etc/nginx/sites-enabled`
     directory if it doesn't exist the first time you run it for
     enabling a site.
-    
+
  6. Reload Nginx:
-   
+
         /etc/init.d/nginx reload
-   
+
  7. Check that your site is working using your browser.
-   
+
  8. Remove the `/etc/nginx.old` directory.
-   
+
  9. Done.
-   
+
 ## Enabling and Disabling Virtual Hosts
 
    I've created a shell script
    [nginx_ensite](http://github.com/perusio/nginx_ensite) that lives
    here on github for quick enabling and disabling of virtual hosts.
-   
+
    If you're not using that script then you have to **manually**
    create the symlinks from `sites-enabled` to `sites-available`. Only
    the virtual hosts configured in `sites-enabled` will be available
@@ -806,19 +806,19 @@ replace** the indicated address by **your** address.
    for the running instance of `php-fpm`. There's a
    `php_fpm_status.conf` file with the configuration for both
    features.
-   
+
    + the **status page** at `/fpm-status`;
-     
+
    + the **ping page** at `/ping`.
 
    For obvious reasons these pages are acessed only from a given set
    of IP addresses. In the suggested configuration only from
    localhost and non-routable IPs of the 192.168.1.0 network.
-    
+
    The allowed hosts are defined in a geo block in file
    `php_fpm_status_allowed_hosts.conf`. You should edit the predefined
-   IP addresses to suit your setup. 
- 
+   IP addresses to suit your setup.
+
    To enable the status and ping pages uncomment the line in the
    `example.com.conf` virtual host configuration file.
 
@@ -831,7 +831,7 @@ replace** the indicated address by **your** address.
    **testing**. The instructions for using the repository are
    presented on this [page](http://debian.perusio.net/debian.html
    "Repository instructions").
- 
+
    It may work or not on Ubuntu. Since Ubuntu seems to appreciate more
    finding semi-witty names for their releases instead of making clear
    what's the status of the software included, meaning. Is it
@@ -850,21 +850,21 @@ replace** the indicated address by **your** address.
    [ad](http://drupal.org/project/ad "Ad module") provide a PHP
    script. This script needs to be invoked. In the case of the **ad
    module** you must add the following location block:
-   
+
        location = /sites/all/modules/ad/serve.php {
           fastcgi_pass phpcgi;
         }
-   
+
    Of course this assumes that you installed the ad module such that
    is usable for all sites. To make it usable when targeting a single
    site, e.g., `mysite.com`, insert instead:
-       
+
        location = /sites/mysite.com/modules/ad/serve.php {
           fastcgi_pass phpcgi;
-       }   
-       
+       }
+
     Proceed similarly for other modules requiring the usage of PHP
-    scripts like `ad`.   
+    scripts like `ad`.
 
 ## On groups.drupal.org
 
@@ -894,7 +894,7 @@ replace** the indicated address by **your** address.
 
    + [Chive](https://github.com/perusio/chive-nginx "Chive Nginx
      config")
-     
+
    + [Piwik](https://github.com/perusio/piwik-nginx "Piwik Nginx
      config")
 
@@ -903,13 +903,13 @@ replace** the indicated address by **your** address.
 
    + [SquirrelMail](https://github.com/perusio/squirrelmail-nginx
      "SquirrelMail Nginx configuration")
-  
+
 ## Securing your PHP configuration
 
    I have created a small shell script that parses your `php.ini` and
    sets a sane environment, be it for **development** or
-   **production** settings. 
-   
+   **production** settings.
+
    Grab it [here](https://github.com/perusio/php-ini-cleanup "PHP
    cleanup script").
 
@@ -917,7 +917,7 @@ replace** the indicated address by **your** address.
 
    + Improve the documentation. It's too vague and needs to be more
      elaborate.
-          
+
    + Add [AgrCache](http://drupal.org/project/agrcache) support. (D7)
 
 ## Acknowledgments
